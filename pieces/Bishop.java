@@ -1,8 +1,8 @@
 package pieces;
 import java.awt.*;
 public class Bishop extends Piece{
-    Bishop(int x, int y, String type, Color color) {
-        super(x, y, type);
+    public Bishop(int x, int y, String type, Color color) {
+        super(x, y, "Bishop", color);
         if (color == Color.WHITE) {
             this.color = Color.WHITE;
             this.piecePng = "white_Bishop.png";

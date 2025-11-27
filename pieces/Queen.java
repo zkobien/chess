@@ -1,8 +1,8 @@
 package pieces;
 import java.awt.*;
 public class Queen extends Piece {
-    Queen(int x, int y, String type, Color color) {
-        super(x, y, type);
+    public Queen(int x, int y, String type, Color color) {
+        super(x, y, "Queen", color);
         if (color == Color.WHITE) {
             this.color = Color.WHITE;
             this.piecePng = "white_Queen.png";

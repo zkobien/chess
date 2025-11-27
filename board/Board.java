@@ -2,6 +2,7 @@ package board;
 
 import java.awt.*;
 import javax.swing.*;
+import pieces.*;
 
 public class Board extends JPanel {
 
@@ -53,6 +54,35 @@ public class Board extends JPanel {
                     t.setForeground(square.getBackground() == lightColor ? darkColor : lightColor);
                 }
 
+                //adding pieces
+                if(row==1)
+                    square.setPiece(new Pawn(col,row,"Pawn",Color.BLACK));
+                if (row == 6)
+                    square.setPiece(new Pawn(col, row, "Pawn", Color.WHITE));
+                if (row == 0) {
+                    if (col == 0 || col == 7)
+                        square.setPiece(new Rook(col, row, "Rook", Color.BLACK));
+                    if(col==1||col==6)
+                        square.setPiece(new Knight(col, row, "Knight", Color.BLACK));
+                    if(col==2||col==5)
+                        square.setPiece(new Bishop(col, row, "Bishop", Color.BLACK));
+                    if (col == 3) 
+                        square.setPiece(new Queen(col, row, "Queen", Color.BLACK));                    
+                    if (col == 4)
+                        square.setPiece(new King(col, row, "King", Color.BLACK));
+                }
+                if (row == 7) {
+                    if(col==0||col==7)
+                        square.setPiece(new Rook(col, row, "Rook", Color.WHITE));
+                    if (col == 1 || col == 6)
+                        square.setPiece(new Knight(col, row, "Knight", Color.WHITE));
+                    if (col == 2 || col == 5)
+                        square.setPiece(new Bishop(col, row, "Bishop", Color.WHITE));
+                    if(col == 3)
+                        square.setPiece(new Queen(col, row, "Queen", Color.WHITE));
+                    if (col == 4)
+                        square.setPiece(new King(col, row, "King", Color.WHITE));
+                }
                 tiles[row][col] = square;
                 this.add(square);
             }
@@ -66,4 +96,6 @@ public class Board extends JPanel {
     private String getNumber(int row) {
         return Integer.toString(8 - row);
     }
+
+    
 }

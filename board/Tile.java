@@ -15,7 +15,37 @@ public class Tile extends JPanel {
     
     public Tile(LayoutManager l) {
         super(l);
-        // piece = null;
+
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g); // Draw the square background color
+
+        if (piece != null && piece.getImage() != null) {
+            Graphics2D g2d = (Graphics2D) g;
+
+            // 1. Enable smooth rendering (essential when resizing images!)
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+            // 2. Define how much of the tile the piece should fill (0.85 = 85%)
+            double scale = 0.75;
+
+            // 3. Calculate the size of the piece based on the tile size
+            int tileWidth = getWidth();
+            int tileHeight = getHeight();
+
+            int pieceWidth = (int) (tileWidth * scale);
+            int pieceHeight = (int) (tileHeight * scale);
+
+            // 4. Calculate the position to center the piece
+            int xPos = (tileWidth - pieceWidth) / 2;
+            int yPos = (tileHeight - pieceHeight) / 2;
+
+            // 5. Draw the image with the new size and position
+            g2d.drawImage(piece.getImage(), xPos, yPos, pieceWidth, pieceHeight, null);
+        }
     }
 
     //setters
@@ -27,9 +57,14 @@ public class Tile extends JPanel {
         this.row = row;
         this.col = col;
     }
-
+    
     public void setTileName(String in) {
         this.name = in;
+    }
+
+    public void setPiece(Piece p) {
+        this.piece = p;
+        this.repaint();
     }
 
     //getters

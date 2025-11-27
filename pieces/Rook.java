@@ -1,8 +1,8 @@
 package pieces;
 import java.awt.*;
 public class Rook extends Piece {
-    Rook(int x, int y, String type, Color color) {
-        super(x, y, type);
+    public Rook(int x, int y, String type, Color color) {
+        super(x, y, "Rook", color);
         if (color == Color.WHITE) {
             this.color = Color.WHITE;
             this.piecePng="white_Rook.png";

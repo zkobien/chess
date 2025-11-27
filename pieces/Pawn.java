@@ -1,8 +1,8 @@
 package pieces;
 import java.awt.*;
 public class Pawn extends Piece {
-    Pawn(int x, int y, String type, Color color) {
-        super(x, y, type);
+    public Pawn(int x, int y, String type, Color color) {
+        super(x, y, "Pawn", color);
         if (color == Color.WHITE) {
             this.color = Color.WHITE;
             this.piecePng = "white_Pawn.png";
