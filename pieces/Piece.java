@@ -1,9 +1,14 @@
 package pieces;
 
+import java.awt.*;
+
 public abstract class Piece {
     int x;
     int y;
     String type;
+    String piecePng;
+    Color color;
+
 
     Piece(int x, int y, String type) {
         this.x = x;
