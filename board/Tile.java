@@ -75,8 +75,8 @@ public class Tile extends JPanel {
     //setters
     public void setPos(int col, int row) {
         //x and y represent the x and y  on the board
-        this.x = 7 - row;
-        this.y = col;
+        this.x = col;
+        this.y = 7-row;
         //row and col represent the position relative to the top left of the board
         this.row = row;
         this.col = col;

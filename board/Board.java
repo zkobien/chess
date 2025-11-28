@@ -7,7 +7,7 @@ import pieces.*;
 
 public class Board extends JPanel {
 
-    // 1. Initialize the array immediately
+    
     public Tile[][] tiles = new Tile[8][8];
 
     public Board() {
@@ -60,32 +60,32 @@ public class Board extends JPanel {
 
                 //adding pieces
                 if (row == 1)
-                    square.setPiece(new Pawn(col, row, "Pawn", Color.BLACK));
+                    square.setPiece(new Pawn(square.getPosX(), square.getPosY(), "Pawn", Color.BLACK));
                 if (row == 6)
-                    square.setPiece(new Pawn(col, row, "Pawn", Color.WHITE));
+                    square.setPiece(new Pawn(square.getPosX(), square.getPosY(), "Pawn", Color.WHITE));
                 if (row == 0) {
                     if (col == 0 || col == 7)
-                        square.setPiece(new Rook(col, row, "Rook", Color.BLACK));
+                        square.setPiece(new Rook(square.getPosX(), square.getPosY(), "Rook", Color.BLACK));
                     if (col == 1 || col == 6)
-                        square.setPiece(new Knight(col, row, "Knight", Color.BLACK));
+                        square.setPiece(new Knight(square.getPosX(), square.getPosY(), "Knight", Color.BLACK));
                     if (col == 2 || col == 5)
-                        square.setPiece(new Bishop(col, row, "Bishop", Color.BLACK));
+                        square.setPiece(new Bishop(square.getPosX(), square.getPosY(), "Bishop", Color.BLACK));
                     if (col == 3)
-                        square.setPiece(new Queen(col, row, "Queen", Color.BLACK));
+                        square.setPiece(new Queen(square.getPosX(), square.getPosY(), "Queen", Color.BLACK));
                     if (col == 4)
-                        square.setPiece(new King(col, row, "King", Color.BLACK));
+                        square.setPiece(new King(square.getPosX(), square.getPosY(), "King", Color.BLACK));
                 }
                 if (row == 7) {
                     if (col == 0 || col == 7)
-                        square.setPiece(new Rook(col, row, "Rook", Color.WHITE));
+                        square.setPiece(new Rook(square.getPosX(), square.getPosY(), "Rook", Color.WHITE));
                     if (col == 1 || col == 6)
-                        square.setPiece(new Knight(col, row, "Knight", Color.WHITE));
+                        square.setPiece(new Knight(square.getPosX(), square.getPosY(), "Knight", Color.WHITE));
                     if (col == 2 || col == 5)
-                        square.setPiece(new Bishop(col, row, "Bishop", Color.WHITE));
+                        square.setPiece(new Bishop(square.getPosX(), square.getPosY(), "Bishop", Color.WHITE));
                     if (col == 3)
-                        square.setPiece(new Queen(col, row, "Queen", Color.WHITE));
+                        square.setPiece(new Queen(square.getPosX(), square.getPosY(), "Queen", Color.WHITE));
                     if (col == 4)
-                        square.setPiece(new King(col, row, "King", Color.WHITE));
+                        square.setPiece(new King(square.getPosX(), square.getPosY(), "King", Color.WHITE));
                 }
                 tiles[row][col] = square;
                 this.add(square);
@@ -99,12 +99,24 @@ public class Board extends JPanel {
                 tile.setHiglighted(true);
         }
     }
+
+    public void unHighlightAll() {
+        for (int i = 0; i < 8; i++) {
+            for (int y = 0; y < 8; y++) {
+                tiles[i][y].setHiglighted(false);
+            }
+        }
+    }
     
     public java.util.List<Tile> getActiveTiles(Tile source) {
         java.util.List<Tile> output = new ArrayList<>();
         //tile logic
 
         return output;
+    }
+
+    public Tile[][] getTileArray() {
+        return this.tiles;
     }
 
 

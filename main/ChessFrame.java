@@ -9,6 +9,8 @@ public class ChessFrame extends JFrame {
     Board board;
     GameLoop gameLoop;
 
+    
+    
     public ChessFrame() {
         super("sackchess");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

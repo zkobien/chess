@@ -1,5 +1,6 @@
 package pieces;
 
+import board.*;
 import java.awt.*;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -27,6 +28,10 @@ public abstract class Piece {
             e.printStackTrace();
         }
     }
+
+
+    public abstract java.util.List<Tile> validSteps(Board input);
+        
     
 
     //setters
@@ -50,5 +55,8 @@ public abstract class Piece {
     public Color getColor() {
         return this.color;
     }
-    
+
+    public boolean isOnBoard(int x, int y) {
+        return x >= 0 && y >= 0 && x <= 7 && y <= 7;
+    }
 }
