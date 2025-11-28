@@ -1,6 +1,7 @@
 package board;
 
 import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import pieces.*;
 
@@ -28,9 +29,11 @@ public class Board extends JPanel {
 
                 // Color initialization
                 if ((row + col) % 2 == 0) {
-                    square.setBackground(lightColor); 
-                }else {
+                    square.setBackground(lightColor);
+                    square.setOriginalColor(lightColor);
+                } else {
                     square.setBackground(darkColor);
+                    square.setOriginalColor(darkColor);
                 }
 
                 // Setting tile name and position
@@ -43,11 +46,12 @@ public class Board extends JPanel {
                 JLabel t = new JLabel(getLetter(col) + " ");
                 t.setHorizontalAlignment(JLabel.RIGHT);
                 t.setFont(new Font("Monospaced", Font.BOLD, 20));
-                
+
                 //adding numbers and letters
                 if (col == 0) {
                     square.add(l, BorderLayout.NORTH);
                     l.setForeground(square.getBackground() == lightColor ? darkColor : lightColor);
+                    
                 }
                 if (row == 7) {
                     square.add(t, BorderLayout.SOUTH);
@@ -55,30 +59,30 @@ public class Board extends JPanel {
                 }
 
                 //adding pieces
-                if(row==1)
-                    square.setPiece(new Pawn(col,row,"Pawn",Color.BLACK));
+                if (row == 1)
+                    square.setPiece(new Pawn(col, row, "Pawn", Color.BLACK));
                 if (row == 6)
                     square.setPiece(new Pawn(col, row, "Pawn", Color.WHITE));
                 if (row == 0) {
                     if (col == 0 || col == 7)
                         square.setPiece(new Rook(col, row, "Rook", Color.BLACK));
-                    if(col==1||col==6)
+                    if (col == 1 || col == 6)
                         square.setPiece(new Knight(col, row, "Knight", Color.BLACK));
-                    if(col==2||col==5)
+                    if (col == 2 || col == 5)
                         square.setPiece(new Bishop(col, row, "Bishop", Color.BLACK));
-                    if (col == 3) 
-                        square.setPiece(new Queen(col, row, "Queen", Color.BLACK));                    
+                    if (col == 3)
+                        square.setPiece(new Queen(col, row, "Queen", Color.BLACK));
                     if (col == 4)
                         square.setPiece(new King(col, row, "King", Color.BLACK));
                 }
                 if (row == 7) {
-                    if(col==0||col==7)
+                    if (col == 0 || col == 7)
                         square.setPiece(new Rook(col, row, "Rook", Color.WHITE));
                     if (col == 1 || col == 6)
                         square.setPiece(new Knight(col, row, "Knight", Color.WHITE));
                     if (col == 2 || col == 5)
                         square.setPiece(new Bishop(col, row, "Bishop", Color.WHITE));
-                    if(col == 3)
+                    if (col == 3)
                         square.setPiece(new Queen(col, row, "Queen", Color.WHITE));
                     if (col == 4)
                         square.setPiece(new King(col, row, "King", Color.WHITE));
@@ -88,6 +92,21 @@ public class Board extends JPanel {
             }
         }
     }
+
+    public void activateTiles(java.util.List<Tile> relevantTiles) {
+        for (Tile tile : relevantTiles) {
+            if (!tile.highlighted)
+                tile.setHiglighted(true);
+        }
+    }
+    
+    public java.util.List<Tile> getActiveTiles(Tile source) {
+        java.util.List<Tile> output = new ArrayList<>();
+        //tile logic
+
+        return output;
+    }
+
 
     private String getLetter(int col) {
         return String.valueOf((char) ('a' + col));

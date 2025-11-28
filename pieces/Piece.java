@@ -46,5 +46,9 @@ public abstract class Piece {
     public Image getImage() {
         return image;
     }
+
+    public Color getColor() {
+        return this.color;
+    }
     
 }

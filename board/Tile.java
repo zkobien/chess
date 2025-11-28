@@ -12,6 +12,8 @@ public class Tile extends JPanel {
     int col;
     String name;
     Piece piece;
+    boolean highlighted;
+    Color originalColor;
     
     public Tile(LayoutManager l) {
         super(l);
@@ -46,6 +48,28 @@ public class Tile extends JPanel {
             // 5. Draw the image with the new size and position
             g2d.drawImage(piece.getImage(), xPos, yPos, pieceWidth, pieceHeight, null);
         }
+
+        if (highlighted) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // Set color to a semi-transparent dot (e.g., Gray with 50% opacity)
+            g2d.setColor(new Color(255, 153, 0, 128));
+
+            // Draw a circle in the center
+            int dotSize = getWidth() / 3;
+            int x = (getWidth() - dotSize) / 2;
+            int y = (getHeight() - dotSize) / 2;
+            g2d.fillOval(x, y, dotSize, dotSize);
+
+            this.setBackground(new Color(255, 204, 0));
+
+        }
+
+        if (!highlighted) {
+            this.setBackground(originalColor);
+        }
+        
     }
 
     //setters
@@ -67,7 +91,24 @@ public class Tile extends JPanel {
         this.repaint();
     }
 
+    public void setHiglighted(boolean in) {
+        highlighted = in;
+        this.repaint();
+    }
+
+    public void setOriginalColor(Color in) {
+        this.originalColor = in;
+    }
+
     //getters
+
+    public Color getoriginalColor() {
+        return this.originalColor;
+    }
+    public boolean getHighlighted() {
+        return highlighted;
+    }
+
     public int getRow() {
         return this.row;
     }
@@ -87,4 +128,10 @@ public class Tile extends JPanel {
     public int getPosY() {
         return this.y;
     }
+
+    public Piece getPiece() {
+        return this.piece;
+    }
+    
+
 }
