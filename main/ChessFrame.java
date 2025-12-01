@@ -35,4 +35,8 @@ public class ChessFrame extends JFrame {
     public Board getBoard() {
         return this.board;
     }
+
+    public void endGame() {
+        
+    }
 }

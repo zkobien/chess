@@ -5,18 +5,36 @@ import java.util.ArrayList;
 import javax.swing.*;
 import pieces.*;
 
+/**
+ * Stores an 8x8 chess grid, and creates it as a jpanel window
+ * the tiles are stored in a 2d Tile object array. Also
+ * stores the active color, used for importing matches
+ */
 public class Board extends JPanel {
 
     
     public Tile[][] tiles = new Tile[8][8];
+    Color activeColor;
 
+    /**
+     * 0 parameter constructor
+     * initializes the supers constructor, 
+     * and then itself with a member function
+     * @return returns with an initialized chessboard
+     */
     public Board() {
         super(new GridLayout(8, 8));
         this.setLayout(new GridLayout(8,8));
         // 3. Build the board
         initializeBoard();
+        activeColor = Color.WHITE;
     }
 
+    /**
+     * initializer function
+     * creates the Tiles individually, sets Pieces on the correct Tiles
+     * @return initializes the 2d Tile array of the board
+    */
     private void initializeBoard() {
         Color lightColor = new Color(249, 245, 209);
         Color darkColor = new Color(200, 66, 66);
@@ -117,6 +135,10 @@ public class Board extends JPanel {
 
     public Tile[][] getTileArray() {
         return this.tiles;
+    }
+
+    public Color getActiveColor() {
+        return activeColor;
     }
 
 

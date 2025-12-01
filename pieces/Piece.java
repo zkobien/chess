@@ -40,6 +40,10 @@ public abstract class Piece {
         this.y = y;
     }
     //getters
+    public String getType() {
+        return this.type;
+    }
+
     public int getPosX() {
        return x;
     }
