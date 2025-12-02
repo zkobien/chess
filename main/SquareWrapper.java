@@ -8,7 +8,6 @@ class SquareWrapper extends JPanel {
         setLayout(null);
         add(child);
     }
-
     @Override
     public void doLayout() {
         if (getComponentCount() > 0) {

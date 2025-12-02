@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import pieces.*;
 
+/**
+ * class for the maind gameloop
+ */
 public class GameLoop extends MouseAdapter {
 
     Board board;
@@ -15,7 +18,12 @@ public class GameLoop extends MouseAdapter {
     Color activeColor;
     Tile blackKingTile;
     Tile whiteKingTile;
-
+    
+    /**
+     * constructor, initializes the game loop
+     * 
+     * @param board input board objec
+     */
     public GameLoop(Board board) {
         this.board = board;
         this.activeColor = Color.WHITE;
@@ -23,17 +31,16 @@ public class GameLoop extends MouseAdapter {
         findKings();
     }
 
+    
     @Override
     public void mousePressed(MouseEvent me) {
         Tile clickedTile = (Tile) me.getSource();
 
-        // CASE 1: Selecting a piece
         if (activeTile == null) {
             if (clickedTile.getPiece() != null && clickedTile.getPiece().getColor() == activeColor) {
                 activeTile = clickedTile;
                 activeTile.setHiglighted(true);
 
-                // --- KEY CHANGE: Only highlight SAFE moves --
                 List<Tile> safeMoves = getSafeMoves(activeTile);
                 for (Tile tile : safeMoves) {
                     tile.setHiglighted(true);
@@ -61,7 +68,11 @@ public class GameLoop extends MouseAdapter {
             }
         }
     }
-
+    /**
+     * 
+     * @param startTile
+     * @return
+     */
     private List<Tile> getSafeMoves(Tile startTile) {
         List<Tile> safeMoves = new ArrayList<>();
         Piece piece = startTile.getPiece();
@@ -122,9 +133,11 @@ public class GameLoop extends MouseAdapter {
 
         if (checkMate() && isKingInCheck(activeColor)) {
             System.out.println("checkmate");
+            //checkmate logic
         }
         else if (checkMate()) {
             System.out.println("stalemate");
+            //stalemate logic
         }
            
     }
@@ -144,7 +157,7 @@ public class GameLoop extends MouseAdapter {
         return true;
     }
     
-    public void findKings() {
+    public final void findKings() {
         whiteKingTile = null;
         blackKingTile = null;
         Tile[][] tiles = board.getTileArray();

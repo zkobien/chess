@@ -1,7 +1,6 @@
 package board;
 
 import java.awt.*;
-import java.util.ArrayList;
 import javax.swing.*;
 import pieces.*;
 
@@ -110,7 +109,10 @@ public class Board extends JPanel {
             }
         }
     }
-
+    /**
+     * highlights the input tiles, setting them active
+     * @param relevantTiles a list of tiles to be highlighted
+     */
     public void activateTiles(java.util.List<Tile> relevantTiles) {
         for (Tile tile : relevantTiles) {
             if (!tile.highlighted)
@@ -118,6 +120,9 @@ public class Board extends JPanel {
         }
     }
 
+    /**
+     * removes highlighting from every tile on the board
+     */
     public void unHighlightAll() {
         for (int i = 0; i < 8; i++) {
             for (int y = 0; y < 8; y++) {
@@ -126,13 +131,7 @@ public class Board extends JPanel {
         }
     }
     
-    public java.util.List<Tile> getActiveTiles(Tile source) {
-        java.util.List<Tile> output = new ArrayList<>();
-        //tile logic
-
-        return output;
-    }
-
+    //getters
     public Tile[][] getTileArray() {
         return this.tiles;
     }
@@ -141,7 +140,7 @@ public class Board extends JPanel {
         return activeColor;
     }
 
-
+    //helper methods
     private String getLetter(int col) {
         return String.valueOf((char) ('a' + col));
     }

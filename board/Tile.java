@@ -27,25 +27,20 @@ public class Tile extends JPanel {
         if (piece != null && piece.getImage() != null) {
             Graphics2D g2d = (Graphics2D) g;
 
-            // 1. Enable smooth rendering (essential when resizing images!)
             g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                     RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-            // 2. Define how much of the tile the piece should fill (0.85 = 85%)
             double scale = 0.75;
 
-            // 3. Calculate the size of the piece based on the tile size
             int tileWidth = getWidth();
             int tileHeight = getHeight();
 
             int pieceWidth = (int) (tileWidth * scale);
             int pieceHeight = (int) (tileHeight * scale);
 
-            // 4. Calculate the position to center the piece
             int xPos = (tileWidth - pieceWidth) / 2;
             int yPos = (tileHeight - pieceHeight) / 2;
 
-            // 5. Draw the image with the new size and position
             g2d.drawImage(piece.getImage(), xPos, yPos, pieceWidth, pieceHeight, null);
         }
 
@@ -53,10 +48,8 @@ public class Tile extends JPanel {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            // Set color to a semi-transparent dot (e.g., Gray with 50% opacity)
             g2d.setColor(new Color(255, 153, 0, 128));
 
-            // Draw a circle in the center
             int dotSize = getWidth() / 3;
             int x = (getWidth() - dotSize) / 2;
             int y = (getHeight() - dotSize) / 2;
