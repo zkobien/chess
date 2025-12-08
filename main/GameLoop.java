@@ -76,9 +76,27 @@ public class GameLoop extends MouseAdapter {
     private List<Tile> getSafeMoves(Tile startTile) {
         List<Tile> safeMoves = new ArrayList<>();
         Piece piece = startTile.getPiece();
-        List<Tile> potentialMoves = piece.validSteps(board); 
+        List<Tile> potentialMoves = piece.validSteps(board);
 
         for (Tile targetTile : potentialMoves) {
+            //castling logic
+            if (piece instanceof King && Math.abs(startTile.getCol() - targetTile.getCol()) == 2) {
+
+                if (isKingInCheck(piece.getColor())) {
+                    continue;
+                }
+                int row = startTile.getRow();
+
+                int colDiff = (targetTile.getCol() > startTile.getCol()) ? 1 : -1;
+                int middleCol = startTile.getCol() + colDiff;
+
+                Tile middleTile = board.getTileArray()[row][middleCol];
+
+                if (!simulateMoveAndCheckSafety(startTile, middleTile)) {
+                    continue;
+                }
+            }
+
             if (simulateMoveAndCheckSafety(startTile, targetTile)) {
                 safeMoves.add(targetTile);
             }
@@ -86,7 +104,7 @@ public class GameLoop extends MouseAdapter {
         return safeMoves;
     }
 
-   
+       
     private boolean simulateMoveAndCheckSafety(Tile start, Tile end) {
         Piece movedPiece = start.getPiece();
         Piece capturedPiece = end.getPiece();
@@ -120,26 +138,52 @@ public class GameLoop extends MouseAdapter {
 
     private void movePiece(Tile start, Tile end) {
         Piece piece = start.getPiece();
+
+        if (piece instanceof King && Math.abs(start.getCol() - end.getCol()) == 2) {
+            int row = start.getRow();
+            Tile[][] tiles = board.getTileArray();
+
+            if (end.getCol() > start.getCol()) {
+                Tile rookStart = tiles[row][7]; 
+                Tile rookEnd = tiles[row][5];  
+
+                Piece rook = rookStart.getPiece();
+                if (rook != null) {
+                    rookEnd.setPiece(rook);
+                    rookStart.setPiece(null);
+                    rook.setPos(rookEnd.getPosX(), rookEnd.getPosY());
+                    rook.setStepped(true);
+                }
+            } // Long Castle (Queen-side) -> King moved Left (Col decreased)
+            else {
+                Tile rookStart = tiles[row][0]; // A-file Rook (Col 0)
+                Tile rookEnd = tiles[row][3];   // D-file Rook Destination (Col 3)
+
+                Piece rook = rookStart.getPiece();
+                if (rook != null) {
+                    rookEnd.setPiece(rook);
+                    rookStart.setPiece(null);
+                    rook.setPos(rookEnd.getPosX(), rookEnd.getPosY());
+                    rook.setStepped(true);
+                }
+            }
+        }
+
         end.setPiece(piece);
         start.setPiece(null);
         piece.setPos(end.getPosX(), end.getPosY());
+        piece.setStepped(true);
 
         clearHighlights();
         activeTile = null;
-
         activeColor = (activeColor == Color.WHITE) ? Color.BLACK : Color.WHITE;
-
         findKings();
 
         if (checkMate() && isKingInCheck(activeColor)) {
             System.out.println("checkmate");
-            //checkmate logic
-        }
-        else if (checkMate()) {
+        } else if (checkMate()) {
             System.out.println("stalemate");
-            //stalemate logic
         }
-           
     }
 
     public boolean checkMate() {

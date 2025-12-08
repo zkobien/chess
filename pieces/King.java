@@ -18,17 +18,50 @@ public class King extends Piece {
     @Override
     public java.util.List<Tile> validSteps(Board input) {
         java.util.List<Tile> validSteps = new ArrayList<>();
-        java.util.List<Tile> guardedTiles = getGuardedTiles(input);
-        Board boardState = input;
-        Tile[][] tileArray = boardState.getTileArray();
+        Tile[][] tileArray = input.getTileArray();
 
         for (int i = -1; i <= 1; i++) {
             for (int t = -1; t <= 1; t++) {
-                if (isOnBoard(x + i, y + t) && !guardedTiles.contains(tileArray[7 - (y + t)][x + i])
-                        && (tileArray[7 - (y + t)][x + i].getPiece() == null
-                                || tileArray[7 - (y + t)][x + i].getPiece()
-                                        .getColor() != this.color)) {
-                    validSteps.add(tileArray[7 - (y + t)][x + i]);
+                if (i == 0 && t == 0) {
+                    continue;
+                }
+                int newX = x + i;
+                int newY = y + t;
+
+                if (isOnBoard(newX, newY)) {
+                    Tile target = tileArray[7-newY][newX]; // Note: y is row, x is col
+                    if (target.getPiece() == null || target.getPiece().getColor() != this.color) {
+                        validSteps.add(target);
+                    }
+                }
+            }
+        }
+
+        // 2. CASTLING LOGIC
+        if (!this.hasStepped()) {
+            int row = 7- this.y; 
+
+            Tile rightRookTile = tileArray[row][7];
+            Piece rightRook = rightRookTile.getPiece();
+
+            if (rightRook != null && rightRook.getType().equals("Rook") && !rightRook.hasStepped()
+            &&rightRook.getColor().equals(this.color)) {
+                if (tileArray[row][5].getPiece() == null && tileArray[row][6].getPiece() == null) {
+                    // Add the destination tile (Column 6)
+                    validSteps.add(tileArray[row][6]);
+                }
+            }
+
+            Tile leftRookTile = tileArray[row][0];
+            Piece leftRook = leftRookTile.getPiece();
+
+            if (leftRook != null && leftRook.getType().equals("Rook") && !leftRook.hasStepped()
+            &&leftRook.getColor().equals(this.getColor())) {
+                if (tileArray[row][1].getPiece() == null
+                        && tileArray[row][2].getPiece() == null
+                        && tileArray[row][3].getPiece() == null) {
+                    // Add the destination tile (Column 2)
+                    validSteps.add(tileArray[row][2]);
                 }
             }
         }

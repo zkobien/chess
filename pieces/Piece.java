@@ -12,6 +12,7 @@ public abstract class Piece {
     String piecePng;
     Color color;
     Image image;
+    boolean hasStepped;
 
     Piece(int x, int y, String type, Color color) {
         this.color = color;
@@ -27,6 +28,16 @@ public abstract class Piece {
             System.out.println("Error loading image: " + path);
             e.printStackTrace();
         }
+        hasStepped = false;
+    }
+    //hasStepped getter and setter
+
+    public boolean hasStepped() {
+        return this.hasStepped;
+    }
+
+    public void setStepped(boolean in) {
+        this.hasStepped = in;
     }
 
 

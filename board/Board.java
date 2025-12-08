@@ -1,6 +1,8 @@
 package board;
 
 import java.awt.*;
+import java.io.*;
+import java.util.Scanner;
 import javax.swing.*;
 import pieces.*;
 
@@ -23,12 +25,161 @@ public class Board extends JPanel {
      */
     public Board() {
         super(new GridLayout(8, 8));
-        this.setLayout(new GridLayout(8,8));
+        this.setLayout(new GridLayout(8, 8));
         // 3. Build the board
         initializeBoard();
         activeColor = Color.WHITE;
     }
+    public Board(String path) {
+        super(new GridLayout(8, 8)); // Ensure layout is set
+        this.setLayout(new GridLayout(8, 8));
 
+        initializeEmptyGrid();
+
+        importGame(path);
+
+        activeColor = Color.WHITE; 
+    }
+
+    public void exportGame(String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (int row = 0; row < 8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    Tile t = tiles[row][col];
+                    Piece p = t.getPiece();
+                    if (p == null) {
+                        writer.write("x");
+                    } else {
+                        String colorPrefix = (p.getColor() == Color.WHITE) ? "w" : "b";
+                        String typeCode = getPieceCode(p);
+                        writer.write(colorPrefix + typeCode);
+                    }
+                    if (col < 7) {
+                        writer.write(" ");
+                    }
+                }
+                writer.newLine();
+            }
+            System.out.println("Game saved to " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void importGame(String filename) {
+        File file = new File(filename);
+        try (Scanner scanner = new Scanner(file)) {
+            for (int row = 0; row < 8; row++) {
+                if (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    String[] tokens = line.trim().split("\\s+");
+                    for (int col = 0; col < 8; col++) {
+                        if (col < tokens.length) {
+                            String token = tokens[col];
+                            Tile t = tiles[row][col];
+                            // Clear existing piece
+                            t.setPiece(null);
+
+                            if (!token.equals("x")) {
+                                Piece p = createPieceFromCode(token, col, 7 - row);
+                                t.setPiece(p);
+                            }
+                        }
+                    }
+                }
+            }
+            this.repaint();
+            System.out.println("Game loaded from " + filename);
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + filename);
+            e.printStackTrace();
+        }
+    }
+
+    private void initializeEmptyGrid() {
+        Color lightColor = new Color(249, 245, 209);
+        Color darkColor = new Color(200, 66, 66);
+
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Tile square = new Tile(new BorderLayout());
+                square.setPreferredSize(new Dimension(100, 100));
+
+                if ((row + col) % 2 == 0) {
+                    square.setBackground(lightColor);
+                    square.setOriginalColor(lightColor);
+                } else {
+                    square.setBackground(darkColor);
+                    square.setOriginalColor(darkColor);
+                }
+
+                square.setTileName(getNumber(row) + getLetter(col));
+                square.setPos(col, row);
+
+                if (col == 0) {
+                    JLabel l = new JLabel(getNumber(row));
+                    l.setFont(new Font("Monospaced", Font.BOLD, 20));
+                    l.setForeground(square.getBackground() == lightColor ? darkColor : lightColor);
+                    square.add(l, BorderLayout.NORTH);
+                }
+                if (row == 7) {
+                    JLabel t = new JLabel(getLetter(col) + " ");
+                    t.setHorizontalAlignment(JLabel.RIGHT);
+                    t.setFont(new Font("Monospaced", Font.BOLD, 20));
+                    t.setForeground(square.getBackground() == lightColor ? darkColor : lightColor);
+                    square.add(t, BorderLayout.SOUTH);
+                }
+
+                tiles[row][col] = square;
+                this.add(square);
+            }
+        }
+    }
+
+    private String getPieceCode(Piece p) {
+        if (p instanceof Pawn) {
+            return "p";
+        }
+        if (p instanceof Rook) {
+            return "r";
+        }
+        if (p instanceof Knight) {
+            return "kn";
+        }
+        if (p instanceof Bishop) {
+            return "b";
+        }
+        if (p instanceof Queen) {
+            return "q";
+        }
+        if (p instanceof King) {
+            return "ki";
+        }
+        return "?";
+    }
+
+    private Piece createPieceFromCode(String code, int x, int y) {
+        char colorChar = code.charAt(0);
+        Color color = (colorChar == 'w') ? Color.WHITE : Color.BLACK;
+        String type = code.substring(1);
+
+        switch (type) {
+            case "p":
+                return new Pawn(x, y, "Pawn", color);
+            case "r":
+                return new Rook(x, y, "Rook", color);
+            case "kn":
+                return new Knight(x, y, "Knight", color);
+            case "b":
+                return new Bishop(x, y, "Bishop", color);
+            case "q":
+                return new Queen(x, y, "Queen", color);
+            case "ki":
+                return new King(x, y, "King", color);
+            default:
+                return null;
+        }
+    }
     /**
      * initializer function
      * creates the Tiles individually, sets Pieces on the correct Tiles
