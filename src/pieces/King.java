@@ -4,6 +4,7 @@ import board.Tile;
 import java.awt.*;
 import java.util.ArrayList;
 public class King extends Piece {
+    
     public King(int x, int y, String type, Color color) {
         super(x, y, "King", color);
         if (color == Color.WHITE) {

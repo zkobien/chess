@@ -25,8 +25,7 @@ public class Board extends JPanel {
      */
     public Board() {
         super(new GridLayout(8, 8));
-        this.setLayout(new GridLayout(8, 8));
-        // 3. Build the board
+        this.setLayout(new GridLayout(8, 8));   
         initializeBoard();
         activeColor = Color.WHITE;
     }
@@ -40,7 +39,10 @@ public class Board extends JPanel {
 
         activeColor = Color.WHITE; 
     }
-
+    /**
+     * 
+     * @param filename
+     */
     public void exportGame(String filename) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             for (int row = 0; row < 8; row++) {

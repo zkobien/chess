@@ -1,0 +1,10 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+    "java.test.config": {
+        "vmArgs": [
+            "-Djava.awt.headless=true"
+        ]
+    }
+}
