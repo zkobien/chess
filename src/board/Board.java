@@ -29,6 +29,12 @@ public class Board extends JPanel {
         initializeBoard();
         activeColor = Color.WHITE;
     }
+
+    /**
+     * Constructor that initializes the board by importing a game state from a file.
+     * Sets up an empty grid first, then populates it using the file data.
+     * @param path the file path to the saved game text file
+     */
     public Board(String path) {
         super(new GridLayout(8, 8)); // Ensure layout is set
         this.setLayout(new GridLayout(8, 8));
@@ -37,11 +43,16 @@ public class Board extends JPanel {
 
         importGame(path);
 
-        activeColor = Color.WHITE; 
+        if (this.activeColor == null) {
+            this.activeColor = Color.WHITE;
+        }
     }
+
     /**
-     * 
-     * @param filename
+     * Exports the current state of the board AND the active turn to a text file.
+     * The format uses specific codes for pieces ("wp"->White Pawn).
+     * The last line of the file will contain "w" or "b" indicating whose turn it is.
+     * @param filename the name (and path) of the file to save the game to
      */
     public void exportGame(String filename) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
@@ -62,27 +73,43 @@ public class Board extends JPanel {
                 }
                 writer.newLine();
             }
-            System.out.println("Game saved to " + filename);
+            
+ 
+            String turn = (this.activeColor == Color.WHITE) ? "w" : "b";
+            writer.write(turn);
+ 
+
+            System.out.println("game saved to " + filename);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Imports a game state from a text file and updates the board.
+     * Reads the file token by token to place pieces, then reads the final token for the active turn.
+     * @param filename the name (and path) of the file to load the game from
+     */
     public void importGame(String filename) {
         File file = new File(filename);
         try (Scanner scanner = new Scanner(file)) {
+            // 1. Read the 8x8 Grid
             for (int row = 0; row < 8; row++) {
                 if (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
+                    if (line.trim().isEmpty()) {
+                        row--; 
+                        continue;
+                    }
+
                     String[] tokens = line.trim().split("\\s+");
                     for (int col = 0; col < 8; col++) {
                         if (col < tokens.length) {
                             String token = tokens[col];
                             Tile t = tiles[row][col];
-                            // Clear existing piece
                             t.setPiece(null);
 
-                            if (!token.equals("x")) {
+                            if (!token.equals("x") && token.length() > 0 && !token.equals("w") && !token.equals("b")) {
                                 Piece p = createPieceFromCode(token, col, 7 - row);
                                 t.setPiece(p);
                             }
@@ -90,14 +117,30 @@ public class Board extends JPanel {
                     }
                 }
             }
+
+            if (scanner.hasNext()) {
+                String turn = scanner.next();
+                if (turn.equalsIgnoreCase("b")) {
+                    this.activeColor = Color.BLACK;
+                } else {
+                    this.activeColor = Color.WHITE;
+                }
+            } else {
+
+                this.activeColor = Color.WHITE;
+            }
+
             this.repaint();
-            System.out.println("Game loaded from " + filename);
+            System.out.println("game loaded from " + filename );
         } catch (FileNotFoundException e) {
-            System.out.println("File not found: " + filename);
+            System.out.println("file not found: " + filename);
             e.printStackTrace();
         }
     }
 
+    /**
+     * Initializes the grid visuals (colors, labels, tiles) without placing pieces.
+     */
     private void initializeEmptyGrid() {
         Color lightColor = new Color(249, 245, 209);
         Color darkColor = new Color(200, 66, 66);
@@ -138,6 +181,12 @@ public class Board extends JPanel {
         }
     }
 
+    /**
+     * helper function to convert a Piece object into its corresponding string code
+     * used during the export process
+     * * @param p the Piece object to convert
+     * @return a String representing the piece type (e.g., "p" for Pawn, "kn" for Knight) 
+     */
     private String getPieceCode(Piece p) {
         if (p instanceof Pawn) {
             return "p";
@@ -160,7 +209,17 @@ public class Board extends JPanel {
         return "?";
     }
 
+    /**
+     * helper function to create a specific Piece object based on a string code
+     * used during the import process
+     * * @param code the string code representing the piece (e.g., "wp", "bkn")
+     * @param x the column position for the new piece
+     * @param y the row position for the new piece
+     * @return the newly created Piece object, or null if the code is invalid 
+     */
     private Piece createPieceFromCode(String code, int x, int y) {
+        if (code.length() < 2) return null; // Safety check
+
         char colorChar = code.charAt(0);
         Color color = (colorChar == 'w') ? Color.WHITE : Color.BLACK;
         String type = code.substring(1);
@@ -182,6 +241,7 @@ public class Board extends JPanel {
                 return null;
         }
     }
+
     /**
      * initializer function
      * creates the Tiles individually, sets Pieces on the correct Tiles
@@ -262,6 +322,7 @@ public class Board extends JPanel {
             }
         }
     }
+
     /**
      * highlights the input tiles, setting them active
      * @param relevantTiles a list of tiles to be highlighted
@@ -285,22 +346,48 @@ public class Board extends JPanel {
     }
     
     //getters
+
+    /**
+     * gets the 2D array of Tile objects representing the board
+     * @return the 8x8 Tile array
+     */
     public Tile[][] getTileArray() {
         return this.tiles;
     }
 
+    /**
+     * gets the active color
+     * @return the active color
+     */
     public Color getActiveColor() {
         return activeColor;
     }
 
+    /**
+     * Sets the active color
+     * @param color the new active color
+     */
+    public void setActiveColor(Color color) {
+        this.activeColor = color;
+    }
+
     //helper methods
+
+    /**
+     * converts a column index (0-7) to its corresponding chess file letter (a-h)
+     * @param col the column index
+     * @return the file letter as a String
+     */
     private String getLetter(int col) {
         return String.valueOf((char) ('a' + col));
     }
 
+    /**
+     * converts a row index (0-7) to its corresponding chess rank number (8-1)
+     * @param row the row index
+     * @return the rank number as a String
+     */
     private String getNumber(int row) {
         return Integer.toString(8 - row);
     }
-
-    
 }

@@ -3,7 +3,19 @@ import board.Board;
 import board.Tile;
 import java.awt.*;
 import java.util.ArrayList;
+
+/**
+ * Represents the Knight chess piece.
+ */
 public class Knight extends Piece {
+    
+    /**
+     * Constructor for the Knight.
+     * @param x initial column
+     * @param y initial row
+     * @param type "Knight"
+     * @param color piece color
+     */
     public Knight(int x, int y, String type, Color color) {
         super(x, y, "Knight", color);
         if (color == Color.WHITE) {
@@ -15,13 +27,18 @@ public class Knight extends Piece {
         }
         this.type = "Knight";
     }
+
+    /**
+     * Calculates valid moves for the Knight.
+     * Checks all 8 possible L shaped steps. 
+     * @param input the current board state
+     * @return list of valid destination tiles
+     */
     @Override
     public java.util.List<Tile> validSteps(Board input) {
         java.util.List<Tile> validSteps = new ArrayList<>();
         Board boardState = input;
         Tile[][] tileArray = boardState.getTileArray();
-        
-
         if (isOnBoard(x + 2, y + 1)) {
             if (tileArray[7 - (y + 1)][x + 2].getPiece() == null ||
                     tileArray[7 - (y + 1)][x + 2].getPiece().getColor() != this.color)

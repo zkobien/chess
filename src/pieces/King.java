@@ -3,8 +3,19 @@ import board.Board;
 import board.Tile;
 import java.awt.*;
 import java.util.ArrayList;
+
+/**
+ * Represents the King chess piece.
+ */
 public class King extends Piece {
     
+    /**
+     * Constructor for the King.
+     * @param x initial column
+     * @param y initial row
+     * @param type "King"
+     * @param color piece color
+     */
     public King(int x, int y, String type, Color color) {
         super(x, y, "King", color);
         if (color == Color.WHITE) {
@@ -16,6 +27,12 @@ public class King extends Piece {
         }
         this.type = "King";
     }
+
+    /**
+     * Calculates valid moves for the King(including castling).
+     * @param input the current board state
+     * @return list of valid destination tiles
+     */
     @Override
     public java.util.List<Tile> validSteps(Board input) {
         java.util.List<Tile> validSteps = new ArrayList<>();
@@ -37,8 +54,7 @@ public class King extends Piece {
                 }
             }
         }
-
-        // 2. CASTLING LOGIC
+        //castling logic
         if (!this.hasStepped()) {
             int row = 7- this.y; 
 
@@ -48,7 +64,6 @@ public class King extends Piece {
             if (rightRook != null && rightRook.getType().equals("Rook") && !rightRook.hasStepped()
             &&rightRook.getColor().equals(this.color)) {
                 if (tileArray[row][5].getPiece() == null && tileArray[row][6].getPiece() == null) {
-                    // Add the destination tile (Column 6)
                     validSteps.add(tileArray[row][6]);
                 }
             }
@@ -61,7 +76,6 @@ public class King extends Piece {
                 if (tileArray[row][1].getPiece() == null
                         && tileArray[row][2].getPiece() == null
                         && tileArray[row][3].getPiece() == null) {
-                    // Add the destination tile (Column 2)
                     validSteps.add(tileArray[row][2]);
                 }
             }
@@ -70,6 +84,12 @@ public class King extends Piece {
         return validSteps;
     }
     
+    /**
+     * Calculates all tiles that are currently attacked (guarded) by enemy pieces.
+     * Used to determine if the King is in check or if a move is safe.
+     * @param input the current board state
+     * @return list of tiles that are under attack by the opponent
+     */
     public java.util.List<Tile> getGuardedTiles(Board input) {
         java.util.List<Tile> guardedTiles = new ArrayList<>();
         Tile[][] tileArray = input.getTileArray();

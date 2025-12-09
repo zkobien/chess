@@ -6,10 +6,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import pieces.*;
 
 /**
- * class for the maind gameloop
+ * Class for the main game loop, handles the main game logic, and responds to mouse presses
  */
 public class GameLoop extends MouseAdapter {
 
@@ -18,22 +19,31 @@ public class GameLoop extends MouseAdapter {
     Color activeColor;
     Tile blackKingTile;
     Tile whiteKingTile;
+    boolean gameOver = false;
     
     /**
-     * constructor, initializes the game loop
-     * 
-     * @param board input board objec
+     * Constructor that initializes the game loop.
+     * Sets the starting player to White and locates the Kings on the board.
+     * @param board the game board object containing the grid and pieces
      */
     public GameLoop(Board board) {
         this.board = board;
-        this.activeColor = Color.WHITE;
+        this.activeColor = board.getActiveColor();
         this.activeTile = null;
         findKings();
     }
 
-    
+    /**
+     * Handles mouse press events to control game flow.
+     * If the game is over, ignores input.
+     * Implements the logic for selecting a piece, moving a selected piece, or deselecting.
+     * @param me the MouseEvent triggered by clicking a tile
+     */
     @Override
     public void mousePressed(MouseEvent me) {
+        if(gameOver)
+            return;
+
         Tile clickedTile = (Tile) me.getSource();
 
         if (activeTile == null) {
@@ -69,9 +79,11 @@ public class GameLoop extends MouseAdapter {
         }
     }
     /**
-     * 
-     * @param startTile
-     * @return
+     * Calculates all legal moves for a specific tile's piece.
+     * Filters out any moves that would result in the King being in check.
+     * Also handles the special validation required for Castling).
+     * @param startTile the tile containing the piece to move
+     * @return a List of valid move destination Tiles
      */
     private List<Tile> getSafeMoves(Tile startTile) {
         List<Tile> safeMoves = new ArrayList<>();
@@ -104,7 +116,13 @@ public class GameLoop extends MouseAdapter {
         return safeMoves;
     }
 
-       
+    /**
+     * Simulates a move to check if it leaves the King safe.
+     * Temporarily executes the move, updates the board state, checks for check, and then reverts the move.
+     * @param start the starting tile
+     * @param end the destination tile
+     * @return true if the move is safe
+     */
     private boolean simulateMoveAndCheckSafety(Tile start, Tile end) {
         Piece movedPiece = start.getPiece();
         Piece capturedPiece = end.getPiece();
@@ -128,14 +146,24 @@ public class GameLoop extends MouseAdapter {
 
         return isSafe;
     }
-
+    /**
+     * Checks if a king of a color is in check
+     * @param color The color of the King that should be checked for check
+     * @return true if the selected King is in check
+     */
     private boolean isKingInCheck(Color color) {
         Tile kingTile = (color == Color.WHITE) ? whiteKingTile : blackKingTile;
         King king = (King) kingTile.getPiece();
 
         return king.getGuardedTiles(board).contains(kingTile);
     }
-
+    
+    /**
+     * Moves a Piece from a start Tile to an end Tile. 
+     * Also Handles checkmate and Stalemate situations
+     * @param start starting point
+     * @param end destination
+     */
     private void movePiece(Tile start, Tile end) {
         Piece piece = start.getPiece();
 
@@ -144,8 +172,8 @@ public class GameLoop extends MouseAdapter {
             Tile[][] tiles = board.getTileArray();
 
             if (end.getCol() > start.getCol()) {
-                Tile rookStart = tiles[row][7]; 
-                Tile rookEnd = tiles[row][5];  
+                Tile rookStart = tiles[row][7];
+                Tile rookEnd = tiles[row][5];
 
                 Piece rook = rookStart.getPiece();
                 if (rook != null) {
@@ -154,10 +182,9 @@ public class GameLoop extends MouseAdapter {
                     rook.setPos(rookEnd.getPosX(), rookEnd.getPosY());
                     rook.setStepped(true);
                 }
-            } // Long Castle (Queen-side) -> King moved Left (Col decreased)
-            else {
-                Tile rookStart = tiles[row][0]; // A-file Rook (Col 0)
-                Tile rookEnd = tiles[row][3];   // D-file Rook Destination (Col 3)
+            } else {
+                Tile rookStart = tiles[row][0];
+                Tile rookEnd = tiles[row][3];
 
                 Piece rook = rookStart.getPiece();
                 if (rook != null) {
@@ -177,15 +204,30 @@ public class GameLoop extends MouseAdapter {
         clearHighlights();
         activeTile = null;
         activeColor = (activeColor == Color.WHITE) ? Color.BLACK : Color.WHITE;
+        board.setActiveColor(activeColor);
         findKings();
 
-        if (checkMate() && isKingInCheck(activeColor)) {
-            System.out.println("checkmate");
-        } else if (checkMate()) {
-            System.out.println("stalemate");
+        if (checkMate()) {
+            if (isKingInCheck(activeColor)) {
+                String winner = (activeColor == Color.WHITE) ? "Black" : "White";
+                JOptionPane.showMessageDialog(board,
+                        "Checkmate: " + winner + " wins!",
+                        "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(board,
+                        "Stalemate! It's a draw.",
+                        "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            gameOver = true;
         }
     }
 
+    /**
+     * Used for Checkmate logic, checks if the active color has any valid moves
+     * @return true if there are no valid moves for the active color
+     */
     public boolean checkMate() {
        
         for (int i = 0; i < 8; i++) {
@@ -200,7 +242,10 @@ public class GameLoop extends MouseAdapter {
         }
         return true;
     }
-    
+
+    /**
+     * Updates the King locations for this GameLoop
+     */
     public final void findKings() {
         whiteKingTile = null;
         blackKingTile = null;
@@ -219,6 +264,9 @@ public class GameLoop extends MouseAdapter {
         }
     }
 
+    /**
+     * clears all highlighting from the board
+     */
     private void clearHighlights() {
         Tile[][] tiles = board.getTileArray();
         for (int row = 0; row < 8; row++) {

@@ -3,7 +3,19 @@ import board.Board;
 import board.Tile;
 import java.awt.*;
 import java.util.ArrayList;
+
+/**
+ * Represents the Rook chess piece.
+ */
 public class Rook extends Piece {
+    
+    /**
+     * Constructor for the Rook.
+     * @param x initial column
+     * @param y initial row
+     * @param type "Rook"
+     * @param color piece color
+     */
     public Rook(int x, int y, String type, Color color) {
         super(x, y, "Rook", color);
         if (color == Color.WHITE) {
@@ -15,11 +27,19 @@ public class Rook extends Piece {
         }
         this.type = "Rook";
     }
+
+    /**
+     * Calculates valid moves for the Rook.
+     * Scans all four directions (Up, Down, Left, Right) until blocked.
+     * @param input the current board state
+     * @return list of valid destination tiles
+     */
     @Override
     public java.util.List<Tile> validSteps(Board input) {
         java.util.List<Tile> validSteps = new ArrayList<>();
         Board boardState = input;
         Tile[][] tileArray = boardState.getTileArray();
+
         int xVar = this.x+1;
         int yVar = this.y;
         boolean pieceFound = false;
@@ -34,6 +54,7 @@ public class Rook extends Piece {
             }
             xVar++;
         }
+
         xVar = this.x - 1;
         yVar = this.y;
         pieceFound = false;
@@ -48,6 +69,7 @@ public class Rook extends Piece {
             }
             xVar--;
         }
+
         xVar = this.x;
         yVar = this.y+1;
         pieceFound = false;
@@ -62,6 +84,7 @@ public class Rook extends Piece {
             }
             yVar++;
         }
+
         xVar = this.x;
         yVar = this.y - 1;
         pieceFound = false;
