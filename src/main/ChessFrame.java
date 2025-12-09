@@ -14,7 +14,7 @@ public class ChessFrame extends JFrame {
     
     
     public ChessFrame(String args[]) {
-        super("sackchess");
+        super("Chess");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         if (args.length > 0 && args[0].equals("import")) {
